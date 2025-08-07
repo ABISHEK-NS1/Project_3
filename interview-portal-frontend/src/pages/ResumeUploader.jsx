@@ -4,6 +4,36 @@ const ResumeUploader = () => {
   const [extractedSkills, setExtractedSkills] = useState([]);
   const [matchedExperiences, setMatchedExperiences] = useState([]);
   const [error, setError] = useState(null);
+  const [selectedCompanies, setSelectedCompanies] = useState([]);
+  const [userInput, setUserInput] = useState("");
+  const companyOptions = ["Google", "Microsoft", "Amazon", "Zoho", "TCS"];
+
+  /*const handleUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("http://localhost:8000/upload-resume/", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setExtractedSkills(data.skills || []);
+        setMatchedExperiences(data.experiences || []);
+        setError(null);
+      } else {
+        setError(data.error || "Unknown error");
+      }
+    } catch (error) {
+      setError("Something went wrong while uploading. Please try again.");
+    }
+  };*/
 
   const handleUpload = async (event) => {
     const file = event.target.files[0];
@@ -11,6 +41,11 @@ const ResumeUploader = () => {
 
     const formData = new FormData();
     formData.append("file", file);
+    //formData.append("companies", JSON.stringify(selectedCompanies));
+    formData.append(
+      "companies",
+      JSON.stringify(userInput.split(",").map((c) => c.trim()))
+    );
 
     try {
       const res = await fetch("http://localhost:8000/upload-resume/", {
@@ -42,6 +77,48 @@ const ResumeUploader = () => {
         onChange={handleUpload}
         style={styles.fileInput}
       />
+      <div style={{ marginBottom: "24px" }}>
+        <label
+          style={{ fontWeight: "bold", display: "block", marginBottom: "8px" }}
+        >
+          Select Preferred Companies (optional):
+        </label>
+        {/*<select
+          multiple
+          value={selectedCompanies}
+          onChange={(e) =>
+            setSelectedCompanies(
+              Array.from(e.target.selectedOptions, (o) => o.value)
+            )
+          }
+          style={{
+            width: "100%",
+            padding: "10px",
+            borderRadius: "6px",
+            border: "1px solid #ccc",
+            fontSize: "16px",
+          }}
+        >
+          {companyOptions.map((company) => (
+            <option key={company} value={company}>
+              {company}
+            </option>
+          ))}
+        </select>*/}
+        <input
+          type="text"
+          value={userInput}
+          onChange={(e) => setUserInput(e.target.value)}
+          placeholder="Enter companies separated by commas (e.g., Google, Microsoft)"
+          style={{
+            padding: "10px",
+            borderRadius: "6px",
+            border: "1px solid #ccc",
+            width: "100%",
+            fontSize: "16px",
+          }}
+        />
+      </div>
 
       {error && <p style={styles.error}>{error}</p>}
 
