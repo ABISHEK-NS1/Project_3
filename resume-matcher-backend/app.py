@@ -71,7 +71,7 @@ def extract_relevant_sections(text):
 def jaccard(set1, set2):
     return len(set1 & set2) / len(set1 | set2) if set1 | set2 else 0
 
-@app.route("/upload-resume/", methods=["POST"])
+'''@app.route("/upload-resume/", methods=["POST"])
 def upload_resume():
     file = request.files.get("file")
     if not file:
@@ -121,7 +121,62 @@ def upload_resume():
     return jsonify({
         "skills": resume_skills,
         "experiences": response
+    })'''
+@app.route("/upload-resume/", methods=["POST"])
+def upload_resume():
+    file = request.files.get("file")
+    if not file:
+        return jsonify({"error": "No file uploaded"}), 400
+
+    companies = request.form.get("companies")
+    selected_companies = json.loads(companies) if companies else []
+
+    resume_text = extract_text_from_pdf(file)
+    relevant_text = extract_relevant_sections(resume_text)
+    resume_skills = extract_skills(relevant_text)
+    resume_set = set(resume_skills)
+
+    experiences = list(experiences_collection.find())
+
+    # Filter only if selected_companies is a non-empty list of non-empty strings
+    if selected_companies and any(company.strip() for company in selected_companies):
+        experiences = [
+            exp for exp in experiences
+            if exp.get("company", "").strip().lower() in [c.strip().lower() for c in selected_companies if c.strip()]
+        ]
+
+
+    for exp in experiences:
+        text_block = " ".join([
+            str(exp.get("role", "")),
+            str(exp.get("tips", "")),
+            str(exp.get("mistakes", "")),
+            " ".join(exp.get("questions", []))
+        ])
+        exp["skills"] = extract_skills(text_block)
+
+    matches = []
+    for exp in experiences:
+        score = jaccard(resume_set, set(exp["skills"]))
+        if score > 0:
+            matches.append((score, exp))
+
+    top_matches = sorted(matches, key=lambda x: x[0], reverse=True)[:3]
+
+    response = [{
+        "company": exp.get("company"),
+        "role": exp.get("role"),
+        "experienceLevel": exp.get("experienceLevel"),
+        "questions": exp.get("questions"),
+        "tips": exp.get("tips"),
+        "mistakes": exp.get("mistakes"),
+    } for score, exp in top_matches]
+
+    return jsonify({
+        "skills": resume_skills,
+        "experiences": response
     })
+
 
 if __name__ == "__main__":
     app.run(port=8000, debug=True)
