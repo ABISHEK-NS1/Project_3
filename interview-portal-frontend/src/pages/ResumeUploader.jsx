@@ -110,6 +110,11 @@ const ResumeUploader = () => {
           value={userInput}
           onChange={(e) => setUserInput(e.target.value)}
           placeholder="Enter companies separated by commas (e.g., Google, Microsoft)"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleUpload();
+            }
+          }}
           style={{
             padding: "10px",
             borderRadius: "6px",
