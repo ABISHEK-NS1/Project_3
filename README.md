@@ -1,12 +1,23 @@
-# React + Vite
+# Interview Experience Sharing Portal
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## About
 
-Currently, two official plugins are available:
+The Interview Experience Sharing Portal helps students and professionals prepare for interviews by accessing real interview experiences shared by others. Users can also upload their resumes to receive personalized interview recommendations based on the skills extracted.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- Share your own interview experiences
+- Search and filter experiences by company, role, or experience level
+- Upload resumes for skill-based recommendations
+- Track mistakes and learn from them
+- Choose between public and private sharing options
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Project Structure
+
+<pre>
+Project_3/
+│── interview-portal-frontend/
+│── interview-portal-backend1/      
+│── resume-matcher-backend/
+│── src/
+</pre>
